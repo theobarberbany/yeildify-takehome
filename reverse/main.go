@@ -10,6 +10,7 @@ import (
 func main() {
 
 	server := &reverseserver.Server{}
+	server.Initialise()
 
 	http.Handle("/reverse", server)
 	// Return 200 on / for health checks.

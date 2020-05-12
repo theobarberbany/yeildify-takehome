@@ -13,6 +13,13 @@ import (
 type Server struct {
 }
 
+// Initialise sets up the server
+func (s *Server) Initialise() {
+	log.Print("server initialised")
+
+	return
+}
+
 // ServeHTTP checks the request body for a message, if one is found it is
 // reversed and returned
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
