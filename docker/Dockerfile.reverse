@@ -1,0 +1,12 @@
+FROM golang:1.14.2-buster
+RUN mkdir /app
+WORKDIR /app
+COPY ./ ./ 
+ENV GO111MODULE=on
+# cache deps before building and copying source so that we don't need to re-download as much
+# and so that source changes don't invalidate our downloaded layer
+RUN go clean -modcache
+RUN go mod download
+RUN go build -o main reverse/main.go
+EXPOSE 8090
+CMD ["/app/main"]
