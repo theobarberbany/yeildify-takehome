@@ -16,4 +16,8 @@ docker build -f $(get_root_path)/docker/Dockerfile.random . -t tb15/random:${1}
 kind load docker-image tb15/reverse:$1
 kind load docker-image tb15/random:$1
 
-# deploy ?
+# deploy
+gsed -E -i "s/(.*reverse:).*/\1$1/" 'kube/deployment.yaml'
+gsed -E -i "s/(.*random:).*/\1$1/" 'kube/deployment.yaml'
+
+kubectl apply -f 'kube/'
