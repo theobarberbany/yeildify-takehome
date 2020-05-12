@@ -30,9 +30,11 @@ func (s *Server) Initialise() {
 	return
 }
 
+// these could be read in as command line args
 const (
 	reverseEndpoint = "reverse"
-	reversePort     = "8090"
+	reverseHost     = "reverse"
+	reversePort     = "80"
 	proxyScheme     = "http"
 )
 
@@ -53,6 +55,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		// possibly degrade gracefully here?
 		log.Printf("proxying request: %s", proxyReq.URL.String())
 		r, err := s.c.Do(proxyReq)
 		if err != nil {
@@ -125,10 +128,7 @@ func buildNewURL(r *http.Request) string {
 	splitURL := strings.Split(r.URL.String(), "/")
 	splitURL = splitURL[:len(splitURL)-1]
 
-	splitHost := strings.Split(r.Host, ":")
-	splitHost = splitHost[:len(splitHost)-1]
-
-	return fmt.Sprintf("%s://%s:%s%s/%s", proxyScheme, strings.Join(splitHost, ":"), reversePort, strings.Join(splitURL, "/"), reverseEndpoint)
+	return fmt.Sprintf("%s://%s:%s%s/%s", proxyScheme, reverseHost, reversePort, strings.Join(splitURL, "/"), reverseEndpoint)
 }
 
 // newProxyRequest builds a new request to be proxied
