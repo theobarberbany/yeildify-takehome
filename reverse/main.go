@@ -14,5 +14,5 @@ func main() {
 	http.Handle("/reverse", server)
 	// Return 200 on / for health checks.
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {})
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8090", nil))
 }
