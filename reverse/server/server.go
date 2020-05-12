@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/theobarberbany/yeildify-takehome/common"
@@ -27,6 +28,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		err := decoder.Decode(&m)
 		if err != nil {
+			log.Printf("error unmarshalling json: %s ", err.Error())
 			response := common.ErrorResponse{
 				ErrorMessage: fmt.Sprintf("error unmarshalling json: %s ", err.Error()),
 			}
@@ -37,6 +39,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		// If there is no message passed to reverse, fail? Maybe I don't need this?
 		if m.Message == "" {
+			log.Printf("message passed is empty")
 			response := common.ErrorResponse{
 				ErrorMessage: fmt.Sprintf("message passed is empty"),
 			}
@@ -57,9 +60,8 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			ErrorMessage: fmt.Sprintf("method %s not implemented, please use POST only", r.Method),
 		}
 
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(response)
+		common.WriteJSONResponse(w, response, http.StatusBadRequest)
+
 		return
 	}
 }
