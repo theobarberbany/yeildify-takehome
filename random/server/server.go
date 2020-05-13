@@ -55,7 +55,8 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// possibly degrade gracefully here?
+		// possibly degrade gracefully here? wrap in a retry function
+		// in case of intermittent network failure?
 		log.Printf("proxying request: %s", proxyReq.URL.String())
 		r, err := s.c.Do(proxyReq)
 		if err != nil {
